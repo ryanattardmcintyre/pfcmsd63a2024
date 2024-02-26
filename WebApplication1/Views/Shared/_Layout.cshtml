@@ -28,8 +28,26 @@
                     </ul>
                 </div>
 
-                <a href="/Home/MembersLanding" style="float:right">Log in</a>
+                
+                @*if User is not logged in 
+                    show him log in button
+                  else
+                    show him/her the log out button
 
+                *@
+
+
+                @if(User.Identity.IsAuthenticated == true)
+                {
+
+                    <span style="float:right">Welcome @User.Identity.Name &nbsp;</span>
+                     
+                    <a style="float:right" href="/Home/Logout">Log out</a>
+                }
+                else
+                {
+                    <a href="/Home/MembersLanding" style="float:right">Log in</a>
+                }
 
             </div>
         </nav>
