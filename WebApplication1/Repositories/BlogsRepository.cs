@@ -12,12 +12,9 @@ namespace WebApplication1.Repositories
     public class BlogsRepository
     {
 
-
-        public BlogsRepository() {
-          //dependency injection
-          //
-          //FirestoreDb db = FirestoreDb.Create(project);
-
+        private FirestoreDb db;
+        public BlogsRepository(string project) {
+           db = FirestoreDb.Create(project); //the initialization of the database
         }
 
 
@@ -30,6 +27,23 @@ namespace WebApplication1.Repositories
             DocumentReference docRef = db.Collection("blogs").Document(b.Id);
             await docRef.SetAsync(b);
 
+        }
+
+        public async Task<List<Blog>> GetBlogs()
+        {
+            List<Blog> blogs = new List<Blog>(); //creating an empty list where i will be holding my returned blog instances
+
+            Query blogsQuery = db.Collection("blogs"); //creating a query object to query the collection called blogs
+            QuerySnapshot blogsQuerySnapshot = await blogsQuery.GetSnapshotAsync();
+            //looping with the snapshot because there might me more than 1 blog
+            foreach (DocumentSnapshot documentSnapshot in blogsQuerySnapshot.Documents) 
+            {
+                    Blog b = documentSnapshot.ConvertTo<Blog>(); //converts from json data to a custom object
+                    b.Id = documentSnapshot.Id; //assign the Id used for the blog within the no-sql database 
+                    blogs.Add(b); //adding the instance into the prepared list on line34
+            }
+
+            return blogs; //returning the prepared list
         }
 
 

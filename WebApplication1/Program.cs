@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
+using WebApplication1.Repositories;
 
 namespace WebApplication1
 {
@@ -8,6 +9,12 @@ namespace WebApplication1
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+
+            string pathToKeyFile = builder.Environment.ContentRootPath + "msd63a2024-d05b0e7fc641.json";
+            System.Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", pathToKeyFile);
+
+
 
             builder.Services
                      .AddAuthentication(options =>
@@ -23,6 +30,16 @@ namespace WebApplication1
                      });
 
             builder.Services.AddRazorPages();
+
+            string project = builder.Configuration["project"].ToString();
+
+            //Services is a collection holding all the initialized services (i.e a pool of services) so when there's a
+            //controller asking for an instance of a particular class, it exists and the Injector class can give it to it
+            builder.Services.AddScoped<BlogsRepository>(x=>new BlogsRepository(project));
+            builder.Services.AddScoped<PostsRepository>(x => new PostsRepository(project));
+
+
+
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
