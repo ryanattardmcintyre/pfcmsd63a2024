@@ -1,0 +1,25 @@
+﻿@model WebApplication1.Models.Post
+
+@{
+    ViewData["Title"] = "Read";
+}
+
+<h1>Read</h1>
+
+<div>
+    <h3>@Model.Title</h3>
+    <hr />
+    
+    <span style="width: 100%; text-align:justify; border: 1px solid black;padding:10px; min-height: 200px;">
+        @Model.Content
+    </span>
+    <hr />
+    <span>
+        Last Updated: @Model.DateUpdated.ToDateTime().ToShortDateString()
+    </span>
+
+</div>
+<div>
+    @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
+    <a href="/Posts/Index?blogId=@Model.BlogId">Back to Post List</a>
+</div>

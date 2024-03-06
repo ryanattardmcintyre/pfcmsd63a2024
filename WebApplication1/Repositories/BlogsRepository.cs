@@ -24,6 +24,7 @@ namespace WebApplication1.Repositories
         /// <param name="b"></param>
         public async void AddBlog(Blog b)
         {
+            b.Id = Guid.NewGuid().ToString();
             DocumentReference docRef = db.Collection("blogs").Document(b.Id);
             await docRef.SetAsync(b);
 

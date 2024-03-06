@@ -50,19 +50,17 @@ namespace WebApplication1.Repositories
         public async Task<Post> GetPost(string blogId, string postId)
         {
            
-            Query postsQuery = db.Collection($"blogs/{blogId}/posts/{postId}"); //creating a query object to query the collection called blogs
-            QuerySnapshot postsQuerySnapshot = await postsQuery.GetSnapshotAsync();
+            var docRef  = await db.Collection($"blogs/{blogId}/posts").Document(postId).GetSnapshotAsync(); //creating a query object to query the collection called blogs
+
             //looping with the snapshot because there might me more than 1 blog
 
-            if (postsQuerySnapshot.Documents.Count == 0)
+            if (docRef == null)
             {
                 return null;
             }
-
-            DocumentSnapshot documentSnapshot = postsQuerySnapshot.Documents[0]; 
             
-            Post p = documentSnapshot.ConvertTo<Post>(); //converts from json data to a custom object
-            p.Id = documentSnapshot.Id; //assign the Id used for the blog within the no-sql database 
+            Post p = docRef.ConvertTo<Post>(); //converts from json data to a custom object
+            p.Id = docRef.Id; //assign the Id used for the blog within the no-sql database 
             p.BlogId = blogId;
 
             return p; //returning the only insance returned

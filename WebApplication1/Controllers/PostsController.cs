@@ -16,5 +16,14 @@ namespace WebApplication1.Controllers
             var list = await _postsRepository.GetPosts(blogId);
             return View(list);
         }
+
+
+        //blogs/<blog-id>/posts/<post-id>
+        public async Task<IActionResult> Read(string postId, string blogId)
+        {
+            var myPost = await _postsRepository.GetPost(blogId, postId);
+            return View(myPost);
+        }
+
     }
 }
