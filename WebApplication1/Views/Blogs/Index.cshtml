@@ -44,9 +44,12 @@
                 <span>@item.DateCreated.ToDateTime().ToShortDateString()</span>
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                    @Html.ActionLink("Edit", "Edit", new {  blogId = item.Id }) |
                 @Html.ActionLink("See Posts", "Index", "Posts", new { blogId = item.Id}) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                  
+                
+                <a href="\Blogs\Delete?blogId=@item.Id">Delete</a>
+                @*@Html.ActionLink("Delete", "Delete", new {blogId = item.Id   })*@
             </td>
         </tr>
 }

@@ -56,5 +56,49 @@ namespace WebApplication1.Controllers
 
             return View(); 
         }
+
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> Edit (string blogId)
+        { 
+            //unlike the CREATE we are NOT creating a new document here; we are editing an existent one which EXISTS
+
+            //therefore i'm reading the blog to be edited and displaying the existent details onto the page
+            var list = await (_blogsRepository.GetBlogs());
+            var myBlogToEdit = list.SingleOrDefault(x => x.Id == blogId); //filtering and getting only the needed blog by id
+
+            //optional: validation
+            if (myBlogToEdit.Author != User.Identity.Name)
+            {//that's not my blog to edit
+                //access denied
+                return RedirectToAction("Index");
+            }
+
+            return View(myBlogToEdit);  //returning it to the page to be edited
+        
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> Edit(Blog updatedBlog)
+        {
+            //i am assuming that the typed in a different name for the blog
+            
+            //validation can be repeated!
+
+            await _blogsRepository.UpdateBlog(updatedBlog);
+            return View(updatedBlog); //OR if you want to redirect the user to another View: return RedirectToAction("Index");
+        }
+
+
+        [Authorize]
+        public async Task<IActionResult> Delete(string blogId)
+        {
+            await _blogsRepository.DeleteBlog(blogId);
+            return RedirectToAction("Index");
+        }
+
+
     }
 }

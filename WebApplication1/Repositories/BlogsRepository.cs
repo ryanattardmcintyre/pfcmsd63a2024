@@ -47,6 +47,23 @@ namespace WebApplication1.Repositories
             return blogs; //returning the prepared list
         }
 
+        public async Task<WriteResult> UpdateBlog(Blog b) {
+          
+            DocumentReference blogRef = db.Collection("blogs").Document(b.Id);
+            Dictionary<string, object> updates = new Dictionary<string, object>
+            {
+                { "Name", b.Name },
+                { "DateUpdated", Timestamp.FromDateTime(DateTime.UtcNow)}
+            };
+            return await blogRef.UpdateAsync(updates);
+        }
+
+        public async Task<WriteResult> DeleteBlog(string id)
+        {
+            DocumentReference blogRef = db.Collection("blogs").Document(id);
+            return  await blogRef.DeleteAsync();
+        }
+
 
     }
 }
