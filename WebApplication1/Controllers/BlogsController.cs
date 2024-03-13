@@ -1,6 +1,7 @@
 ﻿using Google.Cloud.Firestore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Configuration;
 using WebApplication1.Models;
 using WebApplication1.Repositories;
 
@@ -15,8 +16,12 @@ namespace WebApplication1.Controllers
         //Dependency Injection is used to centralize instances so we do not need to create a new instance everytime in every method
 
         private BlogsRepository _blogsRepository;
-        public BlogsController(BlogsRepository blogsRepository) { 
-        _blogsRepository= blogsRepository;
+        private BucketsRepository _bucketsRepository;
+        private IConfiguration _config;
+        public BlogsController(BlogsRepository blogsRepository, BucketsRepository bucketsRepository, IConfiguration config) { 
+            _blogsRepository= blogsRepository;
+            _bucketsRepository= bucketsRepository;
+            _config= config;
         }
 
 
@@ -43,9 +48,19 @@ namespace WebApplication1.Controllers
         /// <returns></returns>
         [HttpPost]
         [Authorize]
-        public IActionResult Create(Blog b) {
+        public async Task<IActionResult> Create(Blog b, IFormFile file, string recipient) {
 
-            
+            string bucketName = _config["bucket"];
+
+            string uniqueFilename = Guid.NewGuid().ToString() + System.IO.Path.GetExtension(file.FileName);
+
+            MemoryStream userFile = new MemoryStream();
+            file.CopyTo(userFile);
+
+            await _bucketsRepository.UploadFile(uniqueFilename, userFile); //uploads the file and we wait for it to complete
+            await _bucketsRepository.GrantAccess(uniqueFilename, recipient); //grants the right to the specified user
+            b.Photo = $"https://storage.cloud.google.com/{bucketName}/{uniqueFilename}";
+
             b.Id = Guid.NewGuid().ToString();
             b.DateCreated = Timestamp.FromDateTime(DateTime.UtcNow);
             b.DateUpdated = Timestamp.FromDateTime(DateTime.UtcNow);

@@ -32,11 +32,13 @@ namespace WebApplication1
             builder.Services.AddRazorPages();
 
             string project = builder.Configuration["project"].ToString();
+            string bucket = builder.Configuration["bucket"].ToString();
 
             //Services is a collection holding all the initialized services (i.e a pool of services) so when there's a
             //controller asking for an instance of a particular class, it exists and the Injector class can give it to it
             builder.Services.AddScoped<BlogsRepository>(x=>new BlogsRepository(project));
             builder.Services.AddScoped<PostsRepository>(x => new PostsRepository(project));
+            builder.Services.AddScoped<BucketsRepository>(x => new BucketsRepository(project, bucket));
 
 
 
