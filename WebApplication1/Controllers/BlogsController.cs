@@ -16,12 +16,16 @@ namespace WebApplication1.Controllers
         //Dependency Injection is used to centralize instances so we do not need to create a new instance everytime in every method
 
         private BlogsRepository _blogsRepository;
+        private PubsubRepository _pubSubRepository;
         private BucketsRepository _bucketsRepository;
         private IConfiguration _config;
-        public BlogsController(BlogsRepository blogsRepository, BucketsRepository bucketsRepository, IConfiguration config) { 
+        public BlogsController(BlogsRepository blogsRepository, BucketsRepository bucketsRepository, IConfiguration config,
+            PubsubRepository pubSubRepository
+            ) { 
             _blogsRepository= blogsRepository;
             _bucketsRepository= bucketsRepository;
             _config= config;
+            _pubSubRepository= pubSubRepository;
         }
 
 
@@ -96,11 +100,13 @@ namespace WebApplication1.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> Edit(Blog updatedBlog)
+        public async Task<IActionResult> Edit(Blog updatedBlog, IFormFile file)
         {
             //i am assuming that the typed in a different name for the blog
             
             //validation can be repeated!
+
+            //same code to upload image as implemented in the CREATE
 
             await _blogsRepository.UpdateBlog(updatedBlog);
             return View(updatedBlog); //OR if you want to redirect the user to another View: return RedirectToAction("Index");
@@ -114,6 +120,18 @@ namespace WebApplication1.Controllers
             return RedirectToAction("Index");
         }
 
+
+
+
+        public async Task<IActionResult> CreateReport(string blogId)
+        {
+            await _pubSubRepository.Publish(blogId);
+            TempData["message"] = "Process will be initiated soon. This will take time so you may continue browsing meanwhile...";
+            //Tempdata is like ViewBag (a way how to pass stringified data to the user on the page) but this is not lost after
+            //a redirection
+
+            return RedirectToAction("Index");
+        }
 
     }
 }

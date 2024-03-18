@@ -27,7 +27,6 @@ namespace WebApplication1.Repositories
             b.Id = Guid.NewGuid().ToString();
             DocumentReference docRef = db.Collection("blogs").Document(b.Id);
             await docRef.SetAsync(b);
-
         }
 
         public async Task<List<Blog>> GetBlogs()
@@ -53,7 +52,8 @@ namespace WebApplication1.Repositories
             Dictionary<string, object> updates = new Dictionary<string, object>
             {
                 { "Name", b.Name },
-                { "DateUpdated", Timestamp.FromDateTime(DateTime.UtcNow)}
+                { "DateUpdated", Timestamp.FromDateTime(DateTime.UtcNow)},
+                {"Photo", b.Photo }
             };
             return await blogRef.UpdateAsync(updates);
         }

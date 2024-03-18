@@ -39,6 +39,7 @@ namespace WebApplication1
             builder.Services.AddScoped<BlogsRepository>(x=>new BlogsRepository(project));
             builder.Services.AddScoped<PostsRepository>(x => new PostsRepository(project));
             builder.Services.AddScoped<BucketsRepository>(x => new BucketsRepository(project, bucket));
+            builder.Services.AddScoped<PubsubRepository>(x => new PubsubRepository(project, "msd63a2024ra"));
 
 
 

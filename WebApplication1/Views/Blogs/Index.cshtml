@@ -38,7 +38,7 @@
                 @Html.DisplayFor(modelItem => item.Author)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Photo)
+              <img src="@item.Photo" style="width:100px; height:100px" />
             </td>
             <td>
                 <span>@item.DateCreated.ToDateTime().ToShortDateString()</span>
@@ -48,8 +48,11 @@
                 @Html.ActionLink("See Posts", "Index", "Posts", new { blogId = item.Id}) |
                   
                 
-                <a href="\Blogs\Delete?blogId=@item.Id">Delete</a>
+                    <a href="\Blogs\Delete?blogId=@item.Id">Delete</a> |
                 @*@Html.ActionLink("Delete", "Delete", new {blogId = item.Id   })*@
+
+
+                    <a href="\Blogs\CreateReport?blogId=@item.Id">Create Report</a>
             </td>
         </tr>
 }
