@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
+using PdfSharp.Fonts;
+using WebApplication1.Controllers;
 using WebApplication1.Repositories;
 
 namespace WebApplication1
@@ -40,7 +42,7 @@ namespace WebApplication1
             builder.Services.AddScoped<PostsRepository>(x => new PostsRepository(project));
             builder.Services.AddScoped<BucketsRepository>(x => new BucketsRepository(project, bucket));
             builder.Services.AddScoped<PubsubRepository>(x => new PubsubRepository(project, "msd63a2024ra"));
-
+            builder.Services.AddScoped<IFontResolver,FileFontResolver>();
 
 
 

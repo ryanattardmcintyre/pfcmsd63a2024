@@ -54,7 +54,7 @@ namespace WebApplication1.Repositories
                 // If acknowledgement required, send to server.
                 if (acknowledge && messageCount > 0)
                 {
-                    subscriberClient.Acknowledge(subscriptionName, response.ReceivedMessages.Select(msg => msg.AckId));
+                   // subscriberClient.Acknowledge(subscriptionName, response.ReceivedMessages.Select(msg => msg.AckId));
                 }
             }
             catch (RpcException ex) when (ex.Status.StatusCode == StatusCode.Unavailable)
