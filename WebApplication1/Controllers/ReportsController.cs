@@ -68,6 +68,10 @@ namespace WebApplication1.Controllers
                 await _bucketsRepository.UploadFile(filenamePDF, msIn);
                 System.IO.File.Delete(filenamePDF);
 
+                //update a status field in the firestore to signal that the conversion took place
+                //status = 0, >>> status =1
+
+
                 return Content("pdf generated - done");
             }
             else return Content("error occurred");

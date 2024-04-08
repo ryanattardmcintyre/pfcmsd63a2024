@@ -53,6 +53,15 @@
 
 
                     <a href="\Blogs\CreateReport?blogId=@item.Id">Create Report</a>
+
+                   @* @if (item.Status == 1)
+                    {*@
+                    @{
+                        var filename = item.Id + ".pdf";
+                    }
+                    <a href="https://storage.cloud.google.com/msd63apfcra_fg/@filename">Download PDF</a>
+                    @*}*@
+
             </td>
         </tr>
 }
