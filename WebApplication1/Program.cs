@@ -27,9 +27,23 @@ namespace WebApplication1
                      .AddCookie()
                      .AddGoogle(options =>
                      {
-                         options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
-                         options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+                         options.ClientId = ""; //builder.Configuration["Authentication:Google:ClientId"];
+                         options.ClientSecret = "";//builder.Configuration["Authentication:Google:ClientSecret"];
                      });
+
+
+            builder.Services.Configure<CookiePolicyOptions>(options =>
+            {
+                options.MinimumSameSitePolicy = SameSiteMode.Unspecified;
+                options.OnAppendCookie = cookieContext =>
+                   CheckSameSite(cookieContext.Context, cookieContext.CookieOptions);
+                options.OnDeleteCookie = cookieContext =>
+                   CheckSameSite(cookieContext.Context, cookieContext.CookieOptions);
+            });
+
+
+
+
 
             builder.Services.AddRazorPages();
 
@@ -64,6 +78,7 @@ namespace WebApplication1
 
             app.UseRouting();
 
+            app.UseCookiePolicy();
             app.UseAuthentication();
             app.UseAuthorization();
 
@@ -73,5 +88,21 @@ namespace WebApplication1
 
             app.Run();
         }
+
+
+        private static void CheckSameSite(HttpContext httpContext, CookieOptions options)
+        {
+            if (options.SameSite == SameSiteMode.None)
+            {
+                var userAgent = httpContext.Request.Headers["User-Agent"].ToString();
+                // TODO: Use your User Agent library of choice here.
+                if (true)
+                {
+                    // For .NET Core < 3.1 set SameSite = (SameSiteMode)(-1)
+                    options.SameSite = SameSiteMode.Unspecified;
+                }
+            }
+        }
+
     }
 }
