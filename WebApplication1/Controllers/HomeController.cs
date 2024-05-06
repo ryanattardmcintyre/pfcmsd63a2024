@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using WebApplication1.Models;
+using WebApplication1.Repositories;
 
 namespace WebApplication1.Controllers
 {
@@ -15,8 +16,21 @@ namespace WebApplication1.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
+        public IActionResult Index([FromServices] RedisRepository rr, [FromServices] LogsRepository lr)
         {
+            try
+            {
+                lr.WriteLogEntry("HomeController-Log", "About to access the redis cache to increment the counter");
+                rr.IncrementCounter();
+                lr.WriteLogEntry("HomeController-Log", "Incremented the counter by one");
+
+                throw new Exception("Exception thrown on purpose");
+            }
+            catch (Exception ex)
+            {
+                lr.WriteLogEntry("HomeController-Log", ex.Message, Google.Cloud.Logging.Type.LogSeverity.Error);
+
+            }
             return View();
         }
 
